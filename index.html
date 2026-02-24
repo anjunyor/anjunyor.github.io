@@ -687,21 +687,81 @@
       color: var(--muted);
     }
 
-    /* RESPONSIVE */
+    /* RESPONSIVE — TABLET (até 900px) */
     @media (max-width: 900px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
-      .hero, .services, .process { padding: 100px 24px 60px; }
-      .projects { padding: 60px 24px; }
-      .contact { padding: 60px 24px; }
-      footer { padding: 24px; }
+
+      .hero { padding: 100px 24px 60px; }
+      .hero-title { font-size: 52px; letter-spacing: -2px; }
+      .hero-cta { flex-direction: column; }
+      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+      .hero-stats { gap: 24px; flex-wrap: wrap; }
+      .hero-stats > div { min-width: 100px; }
+
+      .services { padding: 80px 24px; }
       .services-grid { grid-template-columns: 1fr; }
+
+      .projects { padding: 80px 24px; }
       .projects-grid { grid-template-columns: 1fr; }
       .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+      .project-visual { min-height: 180px; }
+      .project-results { gap: 16px; flex-wrap: wrap; }
+      .project-footer { flex-direction: column; align-items: flex-start; gap: 16px; }
+
+      .process { padding: 80px 24px; }
       .process-steps { grid-template-columns: 1fr 1fr; gap: 32px; }
       .process-steps::before { display: none; }
+
+      .contact { padding: 80px 24px; }
       .contact-inner { grid-template-columns: 1fr; gap: 40px; }
-      .hero-stats { gap: 32px; }
+
+      footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+
+    /* RESPONSIVE — MOBILE (até 480px) */
+    @media (max-width: 480px) {
+      nav { padding: 14px 16px; }
+      .nav-logo { font-size: 15px; }
+
+      .hero { padding: 90px 16px 48px; }
+      .hero-badge { font-size: 10px; padding: 5px 12px; }
+      .hero-title { font-size: 38px; letter-spacing: -1.5px; }
+      .hero-title .line3 { font-size: 0.5em; }
+      .hero-desc { font-size: 14px; }
+      .hero-stats { gap: 20px; padding-top: 32px; margin-top: 40px; }
+      .stat-num { font-size: 28px; }
+      .stat-label { font-size: 10px; }
+
+      .ticker-item { font-size: 10px; padding: 0 20px; }
+
+      .services { padding: 60px 16px; }
+      .section-title { font-size: 32px; letter-spacing: -1px; }
+      .service-card { padding: 32px 24px; }
+      .service-num { font-size: 48px; }
+      .service-title { font-size: 18px; }
+      .service-desc { font-size: 13px; }
+
+      .projects { padding: 60px 16px; }
+      .project-body { padding: 24px 20px; }
+      .project-title { font-size: 18px; }
+      .project-desc { font-size: 13px; }
+      .result-num { font-size: 20px; }
+      .github-link { width: 100%; justify-content: center; }
+
+      .process { padding: 60px 16px; }
+      .process-steps { grid-template-columns: 1fr; gap: 24px; }
+      .process-step { padding: 0 8px; }
+
+      .contact { padding: 60px 16px; }
+      .contact-title { font-size: 34px; letter-spacing: -1px; }
+      .contact-desc { font-size: 14px; }
+      .contact-link { padding: 16px 18px; }
+      .contact-link-value { font-size: 13px; }
+      .avail-badge { font-size: 12px; padding: 8px 16px; }
+      .btn-primary { font-size: 13px; padding: 12px 20px; }
+
+      footer { padding: 20px 16px; font-size: 11px; }
     }
   </style>
 </head>
@@ -1025,11 +1085,11 @@
             <div class="contact-link-value">(61) 99946-5634</div>
           </div>
         </a>
-        <a href="mailto:anjunyor@gmail.com" class="contact-link">
+        <a href="/cdn-cgi/l/email-protection#e4858a8e918a9d8b96a48389858d88ca878b89" class="contact-link">
           <span class="contact-link-icon">✉️</span>
           <div>
             <div class="contact-link-label">E-mail</div>
-            <div class="contact-link-value">anjunyor@gmail.com</div>
+            <div class="contact-link-value"><span class="__cf_email__" data-cfemail="f0919e9a859e899f82b0979d91999cde939f9d">[email&#160;protected]</span></div>
           </div>
         </a>
         <a href="https://www.linkedin.com/in/anderson-moura-21754316b/" target="_blank" class="contact-link">
@@ -1050,11 +1110,3 @@
     </div>
   </div>
 </section>
-
-<footer>
-  <span>© 2025 Anderson — Engenheiro de Dados</span>
-  <span>Brasília, DF · Brasil</span>
-</footer>
-
-</body>
-</html>
