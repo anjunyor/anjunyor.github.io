@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anderson | Engenheiro de Dados</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --card: #16161f;
+      --border: #22223a;
+      --accent: #00e5ff;
+      --accent2: #7b61ff;
+      --accent3: #00ff9d;
+      --text: #e8e8f0;
+      --muted: #7a7a9a;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* GRID BACKGROUND */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* GLOW BLOBS */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.12;
+    }
+    .blob-1 { width: 600px; height: 600px; background: var(--accent2); top: -200px; right: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent); bottom: 100px; left: -100px; }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* SECTIONS */
+    section { position: relative; z-index: 1; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 60px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-content { max-width: 780px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--accent3);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 7vw, 88px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -3px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-title .line2 { color: var(--accent); }
+    .hero-title .line3 { color: var(--muted); font-weight: 400; font-size: 0.55em; letter-spacing: -1px; }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s 0.2s ease both;
+      line-height: 1.8;
+    }
+
+    .hero-desc strong { color: var(--text); }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      color: #000;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,229,255,0.3);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      margin-top: 64px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.6s 0.4s ease both;
+      flex-wrap: wrap;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .stat-num span { color: var(--accent); }
+    .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* STACK TICKER */
+    .ticker-wrap {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      padding: 14px 0;
+    }
+    .ticker {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 32px;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .ticker-item::before {
+      content: '//';
+      color: var(--accent);
+      font-weight: 500;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* SERVICES */
+    .services {
+      padding: 120px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::before {
+      content: '';
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 480px;
+      margin-bottom: 64px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: default;
+    }
+    .service-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      transform-origin: left;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-card:nth-child(2)::before { background: var(--accent2); }
+    .service-card:nth-child(3)::before { background: var(--accent3); }
+    .service-card:nth-child(2) { border-color: #22223a; }
+
+    .service-num {
+      font-family: var(--font-display);
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 24px;
+      transition: color 0.3s;
+    }
+    .service-card:hover .service-num { color: rgba(0,229,255,0.15); }
+
+    .service-icon {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .service-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .service-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* PROJECTS */
+    .projects {
+      padding: 120px 60px;
+      background: var(--surface);
+      position: relative;
+      z-index: 1;
+    }
+    .projects-inner { max-width: 1200px; margin: 0 auto; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .project-card:hover {
+      border-color: var(--accent2);
+      transform: translateY(-4px);
+    }
+    .project-card.featured {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .project-visual {
+      background: linear-gradient(135deg, #12122a 0%, #1a1a35 100%);
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-visual .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 100px;
+    }
+    .bar {
+      width: 28px;
+      background: var(--accent2);
+      border-radius: 4px 4px 0 0;
+      opacity: 0.7;
+      animation: barGrow 1s ease both;
+    }
+    @keyframes barGrow {
+      from { transform: scaleY(0); transform-origin: bottom; }
+      to { transform: scaleY(1); }
+    }
+    .bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+    .bar:nth-child(2) { height: 70%; animation-delay: 0.2s; background: var(--accent); }
+    .bar:nth-child(3) { height: 55%; animation-delay: 0.3s; }
+    .bar:nth-child(4) { height: 90%; animation-delay: 0.4s; background: var(--accent3); }
+    .bar:nth-child(5) { height: 65%; animation-delay: 0.5s; }
+    .bar:nth-child(6) { height: 80%; animation-delay: 0.6s; background: var(--accent); }
+
+    .spider-web {
+      width: 140px; height: 140px;
+      position: relative;
+    }
+    .spider-web svg { width: 100%; height: 100%; }
+
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 32px;
+    }
+    .pipe-node {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .pipe-node:nth-child(odd) { background: rgba(123,97,255,0.15); }
+    .pipe-node:nth-child(even) { background: rgba(0,229,255,0.1); }
+    .pipe-arrow { color: var(--muted); font-size: 18px; }
+
+    .project-body { padding: 36px 40px; }
+    .project-card.featured .project-body { display: flex; flex-direction: column; justify-content: center; }
+
+    .project-category {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .project-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .project-results {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .result-item { text-align: center; }
+    .result-num {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent3);
+    }
+    .result-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .project-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .github-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0,229,255,0.05);
+    }
+    .github-link svg {
+      width: 15px; height: 15px; fill: currentColor; flex-shrink: 0;
+    }
+
+    /* PROCESS */
+    .process {
+      padding: 120px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 64px;
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent));
+      opacity: 0.3;
+    }
+
+    .process-step {
+      padding: 0 24px;
+      text-align: center;
+    }
+    .step-circle {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--accent);
+      margin: 0 auto 24px;
+      background: var(--bg);
+      position: relative;
+      z-index: 1;
+    }
+    .process-step:nth-child(2) .step-circle { border-color: var(--accent2); color: var(--accent2); }
+    .process-step:nth-child(3) .step-circle { border-color: var(--accent3); color: var(--accent3); }
+    .process-step:nth-child(4) .step-circle { border-color: var(--accent); color: var(--accent); }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+    /* CONTACT */
+    .contact {
+      padding: 120px 60px;
+      background: var(--surface);
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+    }
+    .contact-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 4vw, 60px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .contact-title .highlight { color: var(--accent); }
+
+    .contact-desc { color: var(--muted); font-size: 15px; margin-bottom: 40px; line-height: 1.8; }
+
+    .contact-links { display: flex; flex-direction: column; gap: 16px; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); transform: translateX(6px); }
+    .contact-link-icon { font-size: 22px; }
+    .contact-link-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .contact-link-value { font-family: var(--font-display); font-weight: 600; font-size: 15px; }
+
+    .avail-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,255,157,0.08);
+      border: 1px solid rgba(0,255,157,0.2);
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--accent3);
+      margin-bottom: 32px;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 32px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero, .services, .process { padding: 100px 24px 60px; }
+      .projects { padding: 60px 24px; }
+      .contact { padding: 60px 24px; }
+      footer { padding: 24px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .process-steps::before { display: none; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-stats { gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<nav>
+  <div class="nav-logo">Anderson<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#projetos">Projetos</a></li>
+    <li><a href="#processo">Processo</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section>
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Disponível para projetos freelance
+      </div>
+      <h1 class="hero-title">
+        Engenheiro<br>
+        <span class="line2">de Dados</span><br>
+        <span class="line3">Sênior & Arquiteto de Soluções</span>
+      </h1>
+      <p class="hero-desc">
+        Transformo dados brutos em <strong>decisões estratégicas</strong>. Pipelines robustos, coleta automatizada e dashboards que realmente fazem sentido para o seu negócio. <strong>+5 anos</strong> de experiência em Azure, GCP e projetos de grande escala.
+      </p>
+      <div class="hero-cta">
+        <a href="#contato" class="btn-primary">💬 Falar sobre seu projeto</a>
+        <a href="#projetos" class="btn-secondary">Ver projetos →</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">5<span>+</span></div>
+          <div class="stat-label">Anos de experiência</div>
+        </div>
+        <div>
+          <div class="stat-num">3</div>
+          <div class="stat-label">Serviços principais</div>
+        </div>
+        <div>
+          <div class="stat-num">2</div>
+          <div class="stat-label">Clouds dominadas</div>
+        </div>
+        <div>
+          <div class="stat-num">BSB</div>
+          <div class="stat-label">Brasília · Remoto</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Python</span>
+    <span class="ticker-item">PySpark</span>
+    <span class="ticker-item">Azure Databricks</span>
+    <span class="ticker-item">BigQuery</span>
+    <span class="ticker-item">Apache Airflow</span>
+    <span class="ticker-item">Power BI</span>
+    <span class="ticker-item">Azure Data Factory</span>
+    <span class="ticker-item">Web Scraping</span>
+    <span class="ticker-item">Azure Synapse</span>
+    <span class="ticker-item">Scrapy</span>
+    <span class="ticker-item">SQL</span>
+    <span class="ticker-item">Looker</span>
+    <span class="ticker-item">GCP</span>
+    <span class="ticker-item">Git</span>
+    <span class="ticker-item">CI/CD</span>
+    <span class="ticker-item">DataOps</span>
+    <!-- repeat for smooth loop -->
+    <span class="ticker-item">Python</span>
+    <span class="ticker-item">PySpark</span>
+    <span class="ticker-item">Azure Databricks</span>
+    <span class="ticker-item">BigQuery</span>
+    <span class="ticker-item">Apache Airflow</span>
+    <span class="ticker-item">Power BI</span>
+    <span class="ticker-item">Azure Data Factory</span>
+    <span class="ticker-item">Web Scraping</span>
+    <span class="ticker-item">Azure Synapse</span>
+    <span class="ticker-item">Scrapy</span>
+    <span class="ticker-item">SQL</span>
+    <span class="ticker-item">Looker</span>
+    <span class="ticker-item">GCP</span>
+    <span class="ticker-item">Git</span>
+    <span class="ticker-item">CI/CD</span>
+    <span class="ticker-item">DataOps</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="servicos">
+  <div class="services">
+    <div class="section-label">O que ofereço</div>
+    <h2 class="section-title">Serviços</h2>
+    <p class="section-sub">Soluções práticas e escaláveis, entregues com clareza e dentro do prazo.</p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <div class="service-icon">🕷️</div>
+        <h3 class="service-title">Web Scraping & Coleta de Dados</h3>
+        <p class="service-desc">Robôs sob medida para coletar dados de qualquer site: e-commerce, portais públicos, redes sociais, classificados. Entrego organizado em planilha, banco de dados ou API.</p>
+        <div class="service-tags">
+          <span class="tag">Python</span>
+          <span class="tag">Scrapy</span>
+          <span class="tag">Playwright</span>
+          <span class="tag">Selenium</span>
+          <span class="tag">BeautifulSoup</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <div class="service-icon">⚙️</div>
+        <h3 class="service-title">Pipelines de Dados (ETL/ELT)</h3>
+        <p class="service-desc">Construção e automação de pipelines de ingestão, transformação e entrega de dados. Escala, qualidade e monitoramento garantidos em cada etapa do fluxo.</p>
+        <div class="service-tags">
+          <span class="tag">Azure Data Factory</span>
+          <span class="tag">Databricks</span>
+          <span class="tag">Airflow</span>
+          <span class="tag">PySpark</span>
+          <span class="tag">SQL</span>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-num">03</div>
+        <div class="service-icon">📊</div>
+        <h3 class="service-title">Dashboards & Visualização</h3>
+        <p class="service-desc">Criação de dashboards interativos para acompanhar KPIs, vendas e operações. Transformo dados confusos em painéis visuais que qualquer gestor consegue usar.</p>
+        <div class="service-tags">
+          <span class="tag">Power BI</span>
+          <span class="tag">Looker</span>
+          <span class="tag">Superset</span>
+          <span class="tag">BigQuery</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projetos">
+  <div class="projects">
+    <div class="projects-inner">
+      <div class="section-label">Portfólio</div>
+      <h2 class="section-title">Projetos</h2>
+      <p class="section-sub">Projetos demonstrativos com dados reais e públicos.</p>
+
+      <div class="projects-grid" style="margin-top:64px">
+
+        <!-- Featured: Painel B3 -->
+        <div class="project-card featured">
+          <div class="project-visual">
+            <div class="chart-bars">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-category">Dashboard Interativo · yfinance · Chart.js</div>
+            <h3 class="project-title">Painel B3 — Histórico de Preços</h3>
+            <p class="project-desc">Pipeline completo de coleta e visualização de 18 ações da B3 em 5 setores. Coleta automatizada via yfinance, ranking de performance, filtros por setor e período, mini sparklines e KPIs em tempo real — tudo em dashboard web sem dependências externas.</p>
+            <div class="project-results">
+              <div class="result-item">
+                <div class="result-num">18</div>
+                <div class="result-label">ações</div>
+              </div>
+              <div class="result-item">
+                <div class="result-num">5</div>
+                <div class="result-label">setores</div>
+              </div>
+              <div class="result-item">
+                <div class="result-num">1A</div>
+                <div class="result-label">histórico</div>
+              </div>
+            </div>
+            <div class="project-footer">
+              <div class="service-tags">
+                <span class="tag">Python</span>
+                <span class="tag">yfinance</span>
+                <span class="tag">Chart.js</span>
+                <span class="tag">HTML/JS</span>
+              </div>
+              <a href="https://github.com/anjunyor/painel-b3" target="_blank" class="github-link">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                Ver no GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monitor de Preços -->
+        <div class="project-card">
+          <div class="project-visual">
+            <div class="pipeline-flow">
+              <div class="pipe-node">🌐</div>
+              <span class="pipe-arrow">→</span>
+              <div class="pipe-node">🐍</div>
+              <span class="pipe-arrow">→</span>
+              <div class="pipe-node">🗄️</div>
+              <span class="pipe-arrow">→</span>
+              <div class="pipe-node">📈</div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-category">Web Scraping · Mercado Livre · CSV</div>
+            <h3 class="project-title">Monitor de Preços — Mercado Livre</h3>
+            <p class="project-desc">Robô que coleta preços, avaliações e vendedores do Mercado Livre por qualquer termo de busca. Detecta variações históricas de preço entre coletas e gera relatório com estatísticas e top ofertas no terminal.</p>
+            <div class="project-footer">
+              <div class="service-tags">
+                <span class="tag">Scrapy</span>
+                <span class="tag">BeautifulSoup</span>
+                <span class="tag">Python</span>
+                <span class="tag">CSV</span>
+              </div>
+              <a href="https://github.com/anjunyor/monitor-precos" target="_blank" class="github-link">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                Ver no GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline IBGE -->
+        <div class="project-card">
+          <div class="project-visual">
+            <div style="text-align:center; padding: 24px">
+              <div style="font-family: 'Syne', sans-serif; font-size:44px; font-weight:800; color: var(--accent2); opacity:0.6; line-height:1">ETL<br><span style="font-size:22px; color:var(--accent3)">IBGE</span></div>
+            </div>
+          </div>
+          <div class="project-body">
+            <div class="project-category">Pipeline ETL · APIs IBGE · Parquet</div>
+            <h3 class="project-title">Pipeline ETL — Dados Públicos IBGE</h3>
+            <p class="project-desc">Pipeline ETL completo que consome APIs do IBGE (IPCA, PIB trimestral e população por UF), transforma com Pandas e entrega em CSV e Parquet. Inclui testes unitários com pytest e arquitetura modular Extractor → Transformer → Loader.</p>
+            <div class="project-footer">
+              <div class="service-tags">
+                <span class="tag">Pandas</span>
+                <span class="tag">Parquet</span>
+                <span class="tag">pytest</span>
+                <span class="tag">APIs REST</span>
+              </div>
+              <a href="https://github.com/anjunyor/pipeline-ibge" target="_blank" class="github-link">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                Ver no GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="processo">
+  <div class="process">
+    <div class="section-label">Como trabalho</div>
+    <h2 class="section-title">Do briefing à entrega</h2>
+    <p class="section-sub">Processo claro, sem surpresas.</p>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-circle">1</div>
+        <h4 class="step-title">Entendimento</h4>
+        <p class="step-desc">Conversa rápida para entender o problema, a fonte de dados e o resultado esperado.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">2</div>
+        <h4 class="step-title">Proposta</h4>
+        <p class="step-desc">Escopo detalhado com prazo, entregáveis e valor. Sem letras miúdas.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">3</div>
+        <h4 class="step-title">Desenvolvimento</h4>
+        <p class="step-desc">Execução com atualizações regulares. Você acompanha o progresso do início ao fim.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">4</div>
+        <h4 class="step-title">Entrega</h4>
+        <p class="step-desc">Código documentado, revisão em conjunto e suporte pós-entrega.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contato">
+  <div class="contact">
+    <div class="contact-inner">
+      <div>
+        <div class="avail-badge">
+          <span class="badge-dot"></span>
+          Disponível para novos projetos
+        </div>
+        <h2 class="contact-title">Vamos trabalhar<br><span class="highlight">juntos?</span></h2>
+        <p class="contact-desc">Tem um projeto em mente? Me manda uma mensagem contando o que você precisa. Respondo em até 24h.</p>
+        <a href="#" class="btn-primary">💬 Enviar mensagem pelo 99freelas</a>
+      </div>
+      <div class="contact-links">
+        <div class="contact-link">
+          <span class="contact-link-icon">📍</span>
+          <div>
+            <div class="contact-link-label">Localização</div>
+            <div class="contact-link-value">Brasília, DF · Atende remoto</div>
+          </div>
+        </div>
+        <div class="contact-link">
+          <span class="contact-link-icon">🎓</span>
+          <div>
+            <div class="contact-link-label">Formação</div>
+            <div class="contact-link-value">Eng. Computação + Especialização IA & Data Science</div>
+          </div>
+        </div>
+        <div class="contact-link">
+          <span class="contact-link-icon">💼</span>
+          <div>
+            <div class="contact-link-label">Experiência atual</div>
+            <div class="contact-link-value">Banco do Brasil Tecnologia e Serviços</div>
+          </div>
+        </div>
+        <div class="contact-link">
+          <span class="contact-link-icon">⚡</span>
+          <div>
+            <div class="contact-link-label">Especialidade</div>
+            <div class="contact-link-value">Azure · GCP · Pipelines · Scraping · BI</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Anderson — Engenheiro de Dados</span>
+  <span>Brasília, DF · Brasil</span>
+</footer>
+
+</body>
+</html>
